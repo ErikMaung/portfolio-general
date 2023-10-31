@@ -1,0 +1,12 @@
+﻿  Recommender.cpp
+C:\VS\P4\P4\Recommender.cpp(81,32): warning C4244: 'initializing': conversion from '__int64' to 'int', possible loss of data
+C:\VS\P4\P4\Recommender.cpp(86,32): warning C4244: 'initializing': conversion from '__int64' to 'int', possible loss of data
+C:\VS\P4\P4\Recommender.cpp(91,32): warning C4244: 'initializing': conversion from '__int64' to 'int', possible loss of data
+  User.cpp
+  UserDatabase.cpp
+  main.cpp
+  Generating code
+  Previous IPDB and IOBJ mismatch, fall back to full compilation.
+  All 1122 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Finished generating code
+  P4.vcxproj -> C:\VS\P4\x64\Release\P4.exe

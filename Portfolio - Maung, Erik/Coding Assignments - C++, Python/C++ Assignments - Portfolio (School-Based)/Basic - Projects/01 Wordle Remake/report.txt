@@ -1,0 +1,105 @@
+a. The most notable obstacles I overcame came from programming a function to count silver letters. While I started with a function that successfully ignored letters that were gold, I had issues when there were repeats of a letter in the probe word that also had one gold match. I had to use a combination of if conditions to check for pre-existing gold matches for repeated letters and exclude them from the count for silver letters.
+
+main routine, playOneRound, and any other functions
+
+
+b.
+-- MAIN ROUTINE --
+
+The following pseudocode explains my main routine:
+
+initialize wordList C string array;
+if (number of words is less than 1) output error message and terminate program;
+
+initialize variables for round, attempts, min/max/avg round statistics
+
+ask the user for # of rounds to play;
+
+unless round number is negative (for which we output error and end the program):
+
+run loop through each round {
+	pick a random word as hiddenWord;
+	output the Round number and the # of letters in the hiddenWord;
+	playOneRound(...) of the game;
+	output how many tries it took them;
+		// "n try..." if n = 1, "n tries..." if n > 1.
+	assign #ofTries to playOneRound's return value;
+	output the min, max, and average data so far
+}
+
+Then, the main routine returns 0.
+
+
+
+-- playOneRound --
+
+The following pseudocode explains my playOneRound function:
+
+initialize C string hiddenWord to empty string;
+// to be known as something at compile time
+
+assign hiddenWord to randomly selected word;
+
+initialize numberOfTries = 0; // counts guess attempts
+
+loop until the correct word is guessed {
+	initialize an empty probeWord C string;
+	ask the user for a probe word;
+	if (probe word isn't 4-6 lowercase letters)
+		output error message
+	else, if (word isn't in wordList)
+		output error message
+	else {
+		add one to numberOfTries 
+	ONLY IF (probeWord is not the right answer)
+		countGold(...) & countSilver(...) and output them;
+	}
+	
+	lastly, if the probe happens to match the hiddenWord{
+		break out of the loop;
+	}
+}
+
+return the integer value of the numberOfTries.
+
+
+
+-- countGold --
+
+The following pseudocode explains my countGold function:
+
+start with a variable for "gold" # = 0;
+find the minimumLength between probe and hidden words;
+
+loop through each i-th letter upto minimumLength {
+	if the i-th letter in both probe and hidden match:
+		add one to "gold";
+}
+
+return the total # of gold;
+
+
+
+-- countSilver --
+
+The following pseudocode explains my countSilver function:
+
+start with a variable for "silver" # = 0;
+initialize two strings of length 6 = "111111";
+// consider these two strings to correspond to whether or not we used a letter in probeWord or hiddenWord. 1 means available, 0 means used.
+
+loop through each letter of the hidden word{
+
+   loop through each letter of the probe word{
+	if we find a letter that has already been matched with a gold, skip this iteration of checking.
+
+	next, if (the letters are in different positions and BOTH of the letters in probe and hidden are available (1){
+		if they are the same letter {
+			add one to "silver";
+			label both of these letters as used (0);
+		}
+	}
+
+   }
+
+}

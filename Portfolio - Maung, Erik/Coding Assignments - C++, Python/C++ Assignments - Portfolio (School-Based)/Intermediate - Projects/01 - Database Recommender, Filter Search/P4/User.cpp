@@ -1,0 +1,27 @@
+#include "User.h"
+
+#include <iostream>
+#include <string>
+#include <vector>
+using namespace std;
+
+User::User(const string& full_name, const string& email,
+    const vector<string>& watch_history)
+    : m_full_name(full_name), m_email(email), m_watch_history(watch_history) // initializer list, self-explanatory
+{
+}
+
+string User::get_full_name() const
+{
+    return m_full_name;
+}
+
+string User::get_email() const
+{
+    return m_email;
+}
+
+vector<string> User::get_watch_history() const
+{
+    return m_watch_history;
+}

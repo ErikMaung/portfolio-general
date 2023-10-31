@@ -1,0 +1,55 @@
+a. The most notable obstacles I encountered came out of sorting the tax rates for each income bracket in an efficient manner. In a trial run of my program, I only applied the 5% middle-bracket tax rate for nurses and teachers to individuals with income below $125000. I ended up having to declare the change from 7% to 5% (for the $70000 income it applies to) in both the $55000 to $125000 bracket and the bracket over $125000. Outside of this and puzzling together the brackets, it was just a matter of careful organization for the rest of the code.
+
+
+b. List of Test Data: (Entires with "N/A" indicate where the program will not prompt the user for input)
+
+
+---ERROR-PRODUCING ENTRIES LIST---
+Empty string for name to output error message ("", N/A, N/A, N/A)
+
+Negative taxable income to output error message ("John Wooden", -1, N/A, N/A)
+
+Empty string for occupation to output error message ("John Wooden", 100000, "", N/A)
+
+Negative value for children to output error message ("John Wooden", 100000, "coach", -1)
+
+---UNIQUE INPUTS LIST---
+No income and no children to test zero-value entries ("John Wooden", 0, "unemployed", 0)
+
+Children exempting all tax to test that calculation doesn't go negative ("John Wooden", 100, "coach", 100)
+
+---EXPECTED INPUTS LIST---
+Lowest bracket standard test to check 4% ("John Wooden", 50000, "coach", 0)
+
+Add children to previous input to check $200 reduction per child ("John Wooden", 50000, "coach", 2)
+
+Lowest bracket nurse test to ensure reduction does NOT apply ("John Wooden", 50000, "nurse", 0)
+
+Lowest bracket teacher test to ensure reduction does NOT apply ("John Wooden", 50000, "teacher", 0)
+
+Add child to make sure nurse/teacher conditions DON'T interfere with $200 reduction ("John Wooden", 50000, "teacher", 1)
+
+Test a value on the bracket boundary to ensure the brackets are inclusive ("John Wooden", 55000, "coach", 0)
+
+Middle bracket standard test to check 7% ("John Wooden", 100000, "coach", 0)
+
+Add children to previous input to check $200 reduction per child ("John Wooden", 100000, "coach", 2)
+
+Middle bracket nurse test to ensure reduction to 5% DOES apply ("John Wooden", 100000, "nurse", 0)
+
+Middle bracket teacher test to ensure reduction to 5% DOES apply ("John Wooden", 100000, "teacher", 0)
+
+Add child to make sure nurse/teacher conditions DON'T interfere with $200 reduction ("John Wooden", 100000, "teacher", 1)
+
+Test a point on the next bracket boundary to ensure the brackets are inclusive ("John Wooden", 125000, "coach", 0)
+
+High bracket standard test to check 9.3% ("John Wooden", 150000, "coach", 0)
+
+Add children to make sure reduction NO LONGER APPLIES ("John Wooden", 150000, "coach", 2)
+
+High bracket nurse test to ensure reduction DOES apply ("John Wooden", 150000, "nurse", 0)
+
+High bracket teacher test to ensure reduction DOES apply ("John Wooden", 150000, "teacher", 0)
+
+Add child to make sure nurse/teacher conditions don't interfere with $0 reduction ("John Wooden", 150000, "teacher", 1)
+

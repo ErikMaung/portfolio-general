@@ -1,0 +1,136 @@
+a. OBSTACLES:
+
+Probably the biggest challenge to this project was having to redo parts of code over and over because I didn't consider certain input possibilities. Specifically this involves fine-tuning the countSeats function to do things like ignore the state code while searching party codes, what to do with either one or two digits preceding the party code, snipping the string along the commas to get individual forecasts, and (the most challenging) checking through the entire forecast for every repetition of the party code. It was a lot easier handling the isValidPollString function because I could quickly notice patterns that helped simplify the checking process, such as how every comma must be followed by a two-letter state code and preceded by a party code, and how there can never be three consecutive letters or three consecutive numbers.
+
+b. CODE DESCRIPTION:
+
+My code is organized into the isValidUppercaseStateCode function, the two required functions, and an main routine that I used to continually check test cases.
+
+*****The following pseudocode explains my isValidPollString function:*****
+
+-------
+// First, I performed basic syntax checks. 
+
+loop: (check through every character of pollData)
+	if there is any that is NOT EITHER a letter, a number, or a comma
+	return FALSE;
+
+if pollData starts or ends with a comma, OR has a comma in the second or second-to-last position
+	return FALSE; //  we know this since every forecast begins with a two-letter state code
+
+// Then I checked if the state codes were valid.
+
+rewrite the pollData by capitalizing every letter
+
+if the first two characters are not a stateCode, return FALSE;
+loop(run through the rest of the string, and check the two characters after each comma)
+	if these two characters are not a stateCode, return FALSE;
+	also check the character immediately before each comma:
+		if this character is not a letter return FALSE;
+		// it must always be a party code or the last letter of a statecode!
+
+if pollData contains three consecutive letters or three consecutive numbers or two consecutive commas, return FALSE;
+	// the most we have is two-digit numbers and a two-letter stateCode! commas are separators between non-empty forecasts
+
+if a letter is not part of a state code, and it is next to another letter, return FALSE;
+	// you can't have party codes next to another party code or a state code.
+
+lastly, if the last character in the string is a number, return FALSE;
+
+everything that passes these conditions is a poll data string, so return TRUE;
+-------
+
+*****The following pseudocode explains my countSeats function:*****
+
+-------
+rewrite the pollData string with the fully-capitalized version of the poll string input
+rewrite the party input with the capitalized letter version
+
+if the poll string is invalid (referencing isValidPollString), return 1;
+if the party character is not a letter, return 2;
+
+assign seatCount with 0  //  clears value, but only after passing error returns
+
+if the pollData is empty or contains only a state code, return 0;
+assign pollData to CurrentString
+
+while commas are found in CurrentString {
+loop(find the firstForecast in the CurrentString by finding the first comma and taking a substring) {
+	remove the stateCode from firstForecast
+	loop(find every instance of the party code and add the integer equivalent of the one/two digit number preceding it to seatCount)
+	update the CurrentString by removing everything before and including the comma
+	}
+} // this calculates seats for everything except the last forecast
+
+now outside of the while loop, run the search one more time for the last forecast (if the party code can be found to begin with)
+
+return 0; // seats have been fully counted
+-------
+
+c. TEST DATA:
+
+    // BELOW ARE TRUE ASSERTS for isValidPollString (true cases)
+
+    assert(isValidPollString("NY1R")); // basic single forecast works
+    assert(isValidPollString("Ny11r2D3d,cA5G33d2b")); // multiple forecasts, mixed case, multiple parties work
+    assert(isValidPollString("VT,CA,NY")); // statecodes-only works
+    assert(isValidPollString("VT")); // single statecode works
+    assert(isValidPollString("")); // empty string works
+    assert(isValidPollString("ca00D0D,ny0r0i")); // zero values work
+
+    // BELOW ARE OPPOSITE ASSERTS for isValidPollString (false cases)
+
+    assert(!isValidPollString("CA5R3D,Ny101R,Tx56r12d")); // triple digit number
+    assert(!isValidPollString("Ca5R3D,Nyc10R,Tx56r12d")); // triple letter state code
+    assert(!isValidPollString("Ca5R3D,Ny10R,Tx56r12dd")); // double letter party code
+    assert(!isValidPollString("Ca5R3D,Ny10R,Tx56r12d,")); // ends with comma
+    assert(!isValidPollString(",Ca5R3D,Ny10R,Tx56r12d")); // starts with comma
+    assert(!isValidPollString("Ca5R3D,Ny10,Tx56r12d")); // number is missing party code
+    assert(!isValidPollString("5R3D,Ny10R,Tx56r12d")); // missing state code
+    assert(!isValidPollString("Ca5R3D,,Tx56r12d")); // two commas in a row
+    assert(!isValidPollString("CR5R3D,Ny10R,Tx56r12d")); // first state code invalid
+    assert(!isValidPollString("Ca5R3D,NX10R,Tx56r12d")); // other state code invalid
+    assert(!isValidPollString("Ca5R3D,Ny10R,Tx56r12$")); // non-alphanumeric non-comma character
+    assert(!isValidPollString("Ca5R3D;Ny10R;Tx56r12d")); // non-comma separators
+    
+    // BELOW ARE ASSERTS for countSeats (return 0, 1, and 2 possibilities)
+	
+    int seats; // NOTE: adapted from Project 3 spec
+    seats = -999;    // checks all forecasts in the string, case-independent
+    assert(countSeats("CA5R3D,ny10D,Tx56r12d", 'd', seats) == 0  &&  seats == 25);
+
+    seats = -999;    // counts zero seats for a party code that isn't present
+    assert(countSeats("CA5R3D,ny10R,Tx56r12d", 'z', seats) == 0  &&  seats == 0);
+
+    seats = -999;    // checks digits with zeroes properly
+    assert(countSeats("CA5R0D,ny00D,Tx56r01d", 'D', seats) == 0  &&  seats == 1);
+
+                     // in a return 1; error, seats stay unchanged (note that I didn't assign seats in this line)
+    assert(countSeats("CA5R3Dny10RTx56r12d", 'd', seats) == 1  &&  seats == 1);
+
+                     // in a return 2; error, seats stay unchanged (note that I didn't assign seats in this line)
+    assert(countSeats("CA5R3D,ny10R,Tx56r12d", '&', seats) == 2  &&  seats == 1);
+
+    seats = -999;    // can handle multiple of the same party code in one forecast & adds beyond double digits
+    assert(countSeats("CA5R5R,ny10R,Tx50r31r00r99r", 'R', seats) == 0  &&  seats == 200);
+
+    seats = -999;    // if both statecode and party code errors, returns 1
+    assert(countSeats("CA5R3Dny10RTx56r12d", '$', seats) == 1  &&  seats == -999);
+
+    seats = -999;    // no party codes, multiple state codes
+    assert(countSeats("CA,ny,Tx,vT", 'D', seats) == 0  &&  seats == 0);
+
+    seats = -999;    // no party codes, single state code
+    assert(countSeats("ca", 'D', seats) == 0  &&  seats == 0);
+
+    seats = -999;    // empty string
+    assert(countSeats("", 'D', seats) == 0  &&  seats == 0);
+
+    seats = -999;    // party code present but all zero entries
+    assert(countSeats("ca00d,ny0d,tX0d00d0d0d00d,vt00d0d0d0d00d", 'd', seats) == 0  &&  seats == 0);
+
+    seats = -999;    // lowercase input party code shares letters with state codes
+    assert(countSeats("RI4r,cA1C1a,al11A12A,MA00a01A0a1A", 'a', seats) == 0  &&  seats == 26);
+
+    seats = -999;    // uppercase input party code shares letters with state codes
+    assert(countSeats("RI4r,ca1C1a,aL11A12A,MA00a01A0a1A", 'A', seats) == 0  &&  seats == 26);
